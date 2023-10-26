@@ -1,5 +1,6 @@
 import sympy
 import xlsxwriter
+import re
 
 # Properties
 k = 8.0 # Btu / hr*ft*degF
@@ -157,6 +158,13 @@ for i in range(columns):
 # Solve the system and sort the node temperatures
 # Then write them to an excel file
 solution = sympy.solve(equation_set, variable_set)
+
+with open("latex_equation_set.txt", "w") as f:
+	for eq in equation_set:
+		line = "$$\n" + sympy.latex(eq) + "\n$$\n"
+		idx = re.search(r"T_{[io] (\d+)}", line)[1]
+		line = re.sub(r"T_{[io] \d+}", "T_{" + str(idx) + "}", line)
+		f.write(line)
 
 workbook = xlsxwriter.Workbook("NodeTemperatures.xlsx")
 worksheet = workbook.add_worksheet()
