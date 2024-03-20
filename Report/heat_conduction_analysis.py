@@ -1,22 +1,17 @@
 import sympy
 import xlsxwriter
-import re
 import pandas as pd
+
+print("Running this script will output an excel file into the directory it has been downloaded into.")
+input("Please press Enter if you wish to proceed.")
 
 # Properties
 k = 8.0 # Btu / hr*ft*degF
 h = 96.0 # Btu / hr*ft*ft*degF
 T_inf = 80.0 # degF
 T_b = 200.0 # degF
-dx = (1.0 / 8.0) / 12.0 # inch
+dx = 1.0 / 8.0 # inch
 dy = dx # inch
-
-# k = sympy.symbols("k")
-# h = sympy.symbols("h")
-# T_inf = sympy.symbols(r"T_{\infty}")
-# T_b = sympy.symbols("T_b")
-# dx = sympy.symbols(r"\Delta{x}")
-# dy = sympy.symbols(r"\Delta{y}")
 
 # Create a class to generalize each node
 class TNode:
@@ -179,28 +174,6 @@ for i in range(columns):
 # Solve the system and sort the node temperatures
 # Then write them to an excel file
 
-# with open("latex_equation_set.txt", "w") as f:
-# 	interior_equations = []
-# 	exterior_equations_conv = []
-# 	exterior_equations_insul = []
-# 	for eq in equation_set:
-# 		line = "$$\n" + sympy.latex(eq) + "\n$$\n"
-# 		indices = re.findall(r"T_{[io] (\d+)}", line)
-# 		line = re.sub(r"T_{[io] (\d+)}", r"T_{\1}", line)
-		
-# 		if "h" in line:
-# 			exterior_equations_conv.append(line)
-# 		elif "8" in indices or "16" in indices or "24" in indices:
-# 			exterior_equations_insul.append(line)
-# 		else:
-# 			interior_equations.append(line)
-# 	f.write("\\subsection{Interior Equations}\n\n")
-# 	f.writelines(interior_equations)
-# 	f.write("\n\n\\subsection{Exterior Equations with Convection}\n\n")
-# 	f.writelines(exterior_equations_conv)
-# 	f.write("\n\n\\subsection{Exterior Equations with Insulation}\n\n")
-# 	f.writelines(exterior_equations_insul)
-
 solution = sympy.solve(equation_set, variable_set)
 
 workbook = xlsxwriter.Workbook("NodeTemperatures.xlsx")
@@ -213,6 +186,7 @@ for i in range(columns):
 
 workbook.close()
 
+print("\nFinal Nodal Temperatures:")
 df = pd.read_excel("NodeTemperatures.xlsx")
 print(df)
 
